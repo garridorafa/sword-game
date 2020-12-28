@@ -10,8 +10,16 @@ public class EnemyPatrol : MonoBehaviour
 	public float waitingTime = 2f;
 
 	private GameObject _target;
+	private Animator _animator;
+	private Weapon _weapon;
 
+    void Awake()
+    {
+		_animator = GetComponent<Animator>();
+		_weapon = GetComponentInChildren<Weapon>();
+    }
 
+	
     // Start is called before the first frame update
     void Start()
     {
@@ -53,6 +61,10 @@ public class EnemyPatrol : MonoBehaviour
 	{
 		// Coroutine to move the enemy
 		while(Vector2.Distance(transform.position, _target.transform.position) > 0.05f) {
+
+			//Update animator
+			_animator.SetBool("Idle", false);
+
 			// let's move to the target
 			Vector2 direction = _target.transform.position - transform.position;
 			float xDirection = direction.x;
@@ -66,6 +78,13 @@ public class EnemyPatrol : MonoBehaviour
 		// At this point, i've reached the target, let's set our position to the target's one
 		Debug.Log("Target reached");
 		transform.position = new Vector2(_target.transform.position.x, transform.position.y);
+		UpdateTarget();
+
+		//Update animator
+		_animator.SetBool("Idle", true);
+
+		//Shoot
+		_animator.SetTrigger("Shoot");
 
 		// And let's wait for a moment
 		Debug.Log("Waiting for " + waitingTime + " seconds");
@@ -73,7 +92,14 @@ public class EnemyPatrol : MonoBehaviour
 
 		// once waited, let's restore the patrol behaviour
 		Debug.Log("Waited enough, let's update the target and move again");
-		UpdateTarget();
 		StartCoroutine("PatrolToTarget");
+	}
+
+	void CanShoot()
+    {
+		if (_weapon != null)
+		{
+			_weapon.Shoot();	
+		}
 	}
 }
