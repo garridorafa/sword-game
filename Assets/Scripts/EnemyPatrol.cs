@@ -13,31 +13,31 @@ public class EnemyPatrol : MonoBehaviour
 	private Animator _animator;
 	private Weapon _weapon;
 
-    void Awake()
-    {
+
+	void Awake()
+	{
 		_animator = GetComponent<Animator>();
 		_weapon = GetComponentInChildren<Weapon>();
-    }
+	}
 
-	
-    // Start is called before the first frame update
-    void Start()
-    {
+	// Start is called before the first frame update
+	void Start()
+	{
 		UpdateTarget();
 		StartCoroutine("PatrolToTarget");
 	}
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
+	// Update is called once per frame
+	void Update()
+	{
+
+	}
 
 
 	private void UpdateTarget()
 	{
 		// If first time, create target in the left
-		if (_target  == null) {
+		if (_target == null) {
 			_target = new GameObject("Target");
 			_target.transform.position = new Vector2(minX, transform.position.y);
 			transform.localScale = new Vector3(-1, 1, 1);
@@ -60,10 +60,11 @@ public class EnemyPatrol : MonoBehaviour
 	private IEnumerator PatrolToTarget()
 	{
 		// Coroutine to move the enemy
-		while(Vector2.Distance(transform.position, _target.transform.position) > 0.05f) {
+		while (Vector2.Distance(transform.position, _target.transform.position) > 0.05f) {
 
-			//Update animator
+			// Update animator
 			_animator.SetBool("Idle", false);
+
 
 			// let's move to the target
 			Vector2 direction = _target.transform.position - transform.position;
@@ -80,11 +81,12 @@ public class EnemyPatrol : MonoBehaviour
 		transform.position = new Vector2(_target.transform.position.x, transform.position.y);
 		UpdateTarget();
 
-		//Update animator
+		// Update animator
 		_animator.SetBool("Idle", true);
 
-		//Shoot
+		// Shoot
 		_animator.SetTrigger("Shoot");
+
 
 		// And let's wait for a moment
 		Debug.Log("Waiting for " + waitingTime + " seconds");
@@ -96,10 +98,9 @@ public class EnemyPatrol : MonoBehaviour
 	}
 
 	void CanShoot()
-    {
-		if (_weapon != null)
-		{
-			_weapon.Shoot();	
+	{
+		if (_weapon != null) {
+			_weapon.Shoot();
 		}
 	}
 }
