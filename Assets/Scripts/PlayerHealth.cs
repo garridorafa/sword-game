@@ -1,19 +1,31 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerHealth : MonoBehaviour
 {
 	public int totalHealth = 3;
+	public RectTransform heartUI;
+	public GameObject startingPosition;
+
+	//Game over
+	public RectTransform gameOverMenu;
+	public GameObject hordes;
 
 	private int health;
+	public float heartSize = 16f;
 
 	private SpriteRenderer _renderer;
+	private Animator _animator;
+	private PlayerController _controller;
 
 
 	private void Awake()
 	{
 		_renderer = GetComponent<SpriteRenderer>();
+		_animator = GetComponent<Animator>();
+		_controller = GetComponent<PlayerController>();
 	}
 
 	void Start()
@@ -31,8 +43,10 @@ public class PlayerHealth : MonoBehaviour
 		// Game  Over
 		if (health <= 0) {
 			health = 0;
+			gameObject.SetActive(false);
 		}
 
+		heartUI.sizeDelta = new Vector2(heartSize * health, heartSize);
 		Debug.Log("Player got damaged. His current health is " + health);
 	}
 
@@ -45,6 +59,7 @@ public class PlayerHealth : MonoBehaviour
 			health = totalHealth;
 		}
 
+		heartUI.sizeDelta = new Vector2(heartSize * health, heartSize);
 		Debug.Log("Player got some life. His current health is " + health);
 	}
 
@@ -56,4 +71,19 @@ public class PlayerHealth : MonoBehaviour
 
 		_renderer.color = Color.white;
 	}
+
+    private void OnEnable()
+    {
+		health = totalHealth;
+    }
+
+    private void OnDisable()
+    {
+		gameOverMenu.gameObject.SetActive(true);
+
+		hordes.SetActive(false);
+		_animator.enabled = false;
+		_controller.enabled = false;
+		transform.position = startingPosition.transform.position;
+    }
 }
